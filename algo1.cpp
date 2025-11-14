@@ -64,14 +64,25 @@ int main() {
 	std::vector<int> list;
 	char c;
 	std::string temp = "";
+	int state = 0;
 	while(input.get(c)) {
-		if(isdigit(c)) {
-			temp += c;
-		} else if(!temp.empty()){
-			list.push_back(stoi(temp));
-			temp = "";
-		} else {
-			continue;
+		switch(state) {
+			case 0:
+				if(c == '[') {state = 1;}
+				break;
+			case 1:
+				if(isdigit(c)) {temp += c;}
+				else if(c == ',') {list.push_back(stoi(temp)); temp = "";}
+				else if(iswspace(c)) {}
+				else if(c == ']') {list.push_back(stoi(temp)); temp = ""; state = 2;}
+				else {state = 3;}
+				break;
+			case 2:
+				break;
+			case 3:
+				std::cerr << "Error: invalid input. Should be [#,#,#,#...]";
+				return 1;
+				break;			
 		}
 	}
 
