@@ -54,6 +54,7 @@ std::vector<int> recursiveRight(std::vector<int> list, int start, int end);
 
 
 int main() {
+	// open input file
 	std::ifstream input;
 	input.open("input1.txt");
 	if(!input) {
@@ -61,6 +62,7 @@ int main() {
 		return 1;
 	}
 
+	// read from input file using an FSM to filter invalid data
 	std::vector<int> list;
 	char c;
 	std::string temp = "";
@@ -86,11 +88,14 @@ int main() {
 		}
 	}
 
+	// call recursive algorithm
 	std::vector<int> left = recursiveLeft(list, 0, list.size() - 1);
 	std::vector<int> right = recursiveRight(list, 0, list.size() - 1);
 
+	// close input file
 	input.close();
 
+	// open output file
 	std::ofstream output;
 	output.open("output1.txt");
 	if(!output) {
@@ -98,6 +103,7 @@ int main() {
 		return 1;
 	}
 
+	// output results from left and right views
 	output << "Left view --> [";
 	for(long unsigned int i = 0; i < left.size(); i++) {
 		output << left[i];
@@ -115,21 +121,26 @@ int main() {
 	}
 	output << "]" << std::endl;
 
+	// close output file
 	output.close();
 
 	return 0;
 }
 
 std::vector<int> recursiveLeft(std::vector<int> list, int start, int end) {
+	// base case if start and end index are the same
 	if(start == end) {
 		return std::vector<int>{start};
 	}
 
+	// find midpoint for halfing the array
 	int mid = (start + end) / 2;
 
+	// recursively call function on each half
 	std::vector<int> left = recursiveLeft(list, start, mid);
 	std::vector<int> right = recursiveLeft(list, mid + 1, end);
 
+	// find the maximum from the left half
 	int max = 0;
 	for(long unsigned int i = 0; i < left.size(); i++) {
 		if(max < list[left[i]]) {
@@ -137,6 +148,7 @@ std::vector<int> recursiveLeft(std::vector<int> list, int start, int end) {
 		}
 	}
 
+	// only add results that can be seen over the left half's maximum
 	std::vector<int> combined = left;
 	for(long unsigned int i = 0; i < right.size(); i++) {
 		if(list[right[i]] > max) {
@@ -144,19 +156,24 @@ std::vector<int> recursiveLeft(std::vector<int> list, int start, int end) {
 		}
 	}
 
+	// return the combined result
 	return combined;
 }
 
 std::vector<int> recursiveRight(std::vector<int> list, int start, int end) {
+	// base case if start and end index are the same
 	if(start == end) {
 		return std::vector<int>{start};
 	}
 
+	// midpoint for half array
 	int mid = (start + end) / 2;
 
+	// recursively call on each half
 	std::vector<int> left = recursiveRight(list, start, mid);
 	std::vector<int> right = recursiveRight(list, mid + 1, end);
 
+	// find the maximum height from the right half
 	int max = 0;
 	for(long unsigned int i = 0; i < right.size(); i++) {
 		if(max < list[right[i]]) {
@@ -164,6 +181,7 @@ std::vector<int> recursiveRight(std::vector<int> list, int start, int end) {
 		}
 	}
 
+	// only add results from the left that are over the right half's maximum
 	std::vector<int> combined = right;
 	for(long unsigned int i = 0; i < left.size(); i++) {
 		if(list[left[i]] > max) {
@@ -171,5 +189,6 @@ std::vector<int> recursiveRight(std::vector<int> list, int start, int end) {
 		}
 	}
 
+	// return the combined result
 	return combined;
 }

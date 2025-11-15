@@ -26,6 +26,7 @@ greedySelect(list) {
 #include <string>
 #include <algorithm>
 
+// defining structure for activities
 struct Activity {
 	int start;
 	int finish;
@@ -35,6 +36,7 @@ struct Activity {
 std::vector<Activity> greedySelect(std::vector<Activity> list);
 
 int main() {
+	// open input file
 	std::ifstream input;
 	input.open("input2.txt");
 	if(!input) {
@@ -42,6 +44,7 @@ int main() {
 		return 1;
 	}
 
+	// read from input file using an FSM to filter out invalid data
 	std::vector<Activity> list;
 	char c;
 	int state = 0;
@@ -71,9 +74,11 @@ int main() {
 		}
 	}
 
+	// run the greedy algorithm and close input file
 	std::vector<Activity> result = greedySelect(list);
 	input.close();
 
+	// open the output file
 	std::ofstream output;
 	output.open("output2.txt");
 	if(!output) {
@@ -81,6 +86,7 @@ int main() {
 		return 1;
 	}
 
+	// output results from the greedy algorithm into the file, then close
 	output << "[";
 	for(long unsigned int i = 0; i < result.size(); i++) {
 		output << "(" << result[i].start << ", " << result[i].finish << ")";
@@ -94,16 +100,20 @@ int main() {
 	return 0;
 }
 
+// used to sort the list of activites by finish times
 bool compare(Activity &a1, Activity &a2) {
 	return a1.finish < a2.finish;
 }
 
 std::vector<Activity> greedySelect(std::vector<Activity> list) {
+	// use the sort function to sort the activities by the finish times
 	std::sort(list.begin(), list.end(), compare);
 
 	std::vector<Activity> selected;
 	int time = 0;
 
+	// use the greedy algorithm where if the start time of the item is teh same or later than the finish time of
+	// the first item, to select it
 	for(long unsigned int i = 0; i < list.size(); i++) {
 		if(list[i].start >= time) {
 			selected.push_back(list[i]);
@@ -111,5 +121,6 @@ std::vector<Activity> greedySelect(std::vector<Activity> list) {
 		}
 	}
 
+	// return the selected list of activities
 	return selected;
 }
